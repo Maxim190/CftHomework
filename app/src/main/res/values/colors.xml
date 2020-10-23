@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="lush_lava">#FF4500</color>
+    <color name="aqua_menthe">#7FFFD4</color>
+    <color name="japan">#EE82EE</color>
 </resources>
