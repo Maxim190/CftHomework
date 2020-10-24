@@ -4,36 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
     app:startDestination="@+id/mainFragment">
+
     <fragment
         android:id="@+id/navigationFragment"
         android:name="com.example.cfthomework.ui.navigation.NavigationFragment"
         android:label="fragment_navigation"
         tools:layout="@layout/fragment_navigation" >
+
         <action
             android:id="@+id/action_navigationFragment_self"
             app:destination="@id/navigationFragment"/>
+
         <action
             android:id="@+id/action_navigationFragment_to_mainFragment"
             app:destination="@id/mainFragment"
             app:popUpTo="@+id/mainFragment"
             app:popUpToInclusive="true"/>
+
         <argument
             android:name="myTag"
             app:argType="string"
             app:nullable="true"
             android:defaultValue="A" />
+
         <argument
             android:name="history"
             app:argType="string"
             app:nullable="true"
             android:defaultValue="A" />
     </fragment>
+
+    <fragment
+        android:id="@+id/phoneBookFragment"
+        android:name="com.example.cfthomework.ui.contentprovider.PhoneBookFragment"
+        android:label="PhoneBookFragment" >
+    </fragment>
+
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.example.cfthomework.ui.MainFragment"
         android:label="MainFragment" >
+
         <action
             android:id="@+id/action_mainFragment_to_navigationFragment"
             app:destination="@id/navigationFragment"/>
+
+        <action
+            android:id="@+id/action_mainFragment_to_phoneBookFragment"
+            app:destination="@id/phoneBookFragment"/>
+
     </fragment>
+
 </navigation>

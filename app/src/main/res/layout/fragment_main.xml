@@ -6,29 +6,29 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/button_navigation"
+        android:id="@+id/fragment_main_btn_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/navigation"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_main_btn_service"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/fragment_main_btn_service"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/service"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_main_btn_contentProvider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_navigation" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_main_btn_navigation" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/fragment_main_btn_contentProvider"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/content_provider"
@@ -36,5 +36,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_main_btn_service" />
 </androidx.constraintlayout.widget.ConstraintLayout>

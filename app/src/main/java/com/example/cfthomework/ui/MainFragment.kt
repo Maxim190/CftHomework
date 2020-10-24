@@ -17,8 +17,15 @@ class MainFragment: Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        button_navigation.setOnClickListener {
-            Navigation.findNavController(requireView()).navigate(R.id.navigationFragment)
+        fragment_main_btn_navigation.setOnClickListener {
+            openFragment(R.id.navigationFragment)
         }
+        fragment_main_btn_contentProvider.setOnClickListener {
+            openFragment(R.id.phoneBookFragment)
+        }
+    }
+
+    private fun openFragment(id: Int) {
+        Navigation.findNavController(requireView()).navigate(id)
     }
 }
