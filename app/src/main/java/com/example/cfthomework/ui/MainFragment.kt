@@ -20,6 +20,9 @@ class MainFragment: Fragment() {
         fragment_main_btn_navigation.setOnClickListener {
             openFragment(R.id.navigationFragment)
         }
+        fragment_main_btn_service.setOnClickListener {
+            openFragment(R.id.serviceFragment)
+        }
         fragment_main_btn_contentProvider.setOnClickListener {
             openFragment(R.id.phoneBookFragment)
         }

@@ -52,7 +52,14 @@
         <action
             android:id="@+id/action_mainFragment_to_phoneBookFragment"
             app:destination="@id/phoneBookFragment"/>
+        <action
+            android:id="@+id/action_mainFragment_to_serviceFragment"
+            app:destination="@id/serviceFragment" />
 
     </fragment>
+    <fragment
+        android:id="@+id/serviceFragment"
+        android:name="com.example.cfthomework.ui.service.ServiceFragment"
+        android:label="ServiceFragment" />
 
 </navigation>
