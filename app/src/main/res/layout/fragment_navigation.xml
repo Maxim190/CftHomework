@@ -20,6 +20,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:text="A" />
 
             <Button
@@ -27,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
+                android:layout_marginEnd="5dp"
                 android:text="B" />
 
             <Button
@@ -34,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
+                android:layout_marginEnd="5dp"
                 android:text="C" />
         </LinearLayout>
 
@@ -41,7 +45,9 @@
             android:id="@+id/fragment_nav_history_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:textSize="25sp"
+            android:layout_marginStart="5dp"
+            tools:text="TextView" />
 
         <TextView
             android:id="@+id/fragment_nav_label_tv"

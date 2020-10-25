@@ -32,12 +32,12 @@ class ServiceFragment: Fragment() {
 
         fragment_service_startBtn.setOnClickListener {
             requireContext().startService(intent)
-            fragment_service_statusLabel.text = "Service started"
+            fragment_service_statusLabel.text = "started"
             fragment_service_progressBar.visibility = View.VISIBLE
         }
         fragment_service_stopBtn.setOnClickListener {
             requireContext().stopService(intent)
-            fragment_service_statusLabel.text = "Service stopped"
+            fragment_service_statusLabel.text = "stopped"
             fragment_service_progressBar.visibility = View.INVISIBLE
         }
     }
