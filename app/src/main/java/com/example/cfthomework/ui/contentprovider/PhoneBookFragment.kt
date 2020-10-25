@@ -37,8 +37,11 @@ class PhoneBookFragment: Fragment() {
             val recyclerView = fragment_contProvider_recyclerView
             recyclerView.layoutManager = LinearLayoutManager(context)
 
+            fragment_contProvider_progressBar.visibility = View.VISIBLE
+
             storage?.getProfiles()?.observe(viewLifecycleOwner) {
                 recyclerView.adapter = PhoneBookAdapter(it)
+                fragment_contProvider_progressBar.visibility = View.INVISIBLE
             }
         }
     }
