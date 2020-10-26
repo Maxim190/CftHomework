@@ -1,2 +1,3 @@
+include ':mycustomview'
 include ':app'
 rootProject.name = "CftHomework"
