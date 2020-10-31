@@ -23,6 +23,7 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         const val STATE_SEGMENTS_AMOUNT = "segmentsAmount"
         const val STATE_POINTER_COLOR = "pointerColor"
         const val STATE_SEGMENT_COLOR = "segmentColor"
+        const val STATE_BACKGROUND_COLOR = "backgroundColor"
         const val STATE_SUPER = "superState"
     }
 
@@ -31,6 +32,7 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
     private val DEFAULT_SEGMENT_COLOR = Color.CYAN
     private val DEFAULT_DIGIT_COLOR = Color.BLUE
     private val DEFAULT_POINTER_COLOR = Color.RED
+    private val DEFAULT_BACKGROUND_COLOR = Color.WHITE
     private val DEFAULT_SEGMENT_AMOUNT = 5
     private val DEFAULT_WIDTH = 250
     private val DEFAULT_HEIGHT = 250
@@ -45,11 +47,12 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
             field = value.coerceAtMost(maxSpeed)
         }
 
-    var background: Int = Color.WHITE
+    var background: Int = DEFAULT_BACKGROUND_COLOR
+        private set
+    var pointerColor: Int = DEFAULT_POINTER_COLOR
         private set
     private var segmentColor: Int
     private var digitColor: Int
-    private var pointerColor: Int
 
     private var blockOfSegmentsAmount: Int
     private var segmentsPerBlockAmount = 9
@@ -74,6 +77,7 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
             digitColor = getColor(R.styleable.SpeedometerView_digitColor, DEFAULT_DIGIT_COLOR)
             curSpeed = getFloat(R.styleable.SpeedometerView_currentSpeed, DEFAULT_CURRENT_SPEED)
             pointerColor = getInteger(R.styleable.SpeedometerView_pointerColor, DEFAULT_POINTER_COLOR)
+            background = getInteger(R.styleable.SpeedometerView_backgroundColor, DEFAULT_BACKGROUND_COLOR)
         }
         segmentsDegreeStep = 180F / (segmentsPerBlockAmount * blockOfSegmentsAmount)
         speedStep = maxSpeed / blockOfSegmentsAmount
@@ -195,6 +199,11 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         invalidate()
     }
 
+    fun setPointerColor(color: Int) {
+        pointerColor = color
+        invalidate()
+    }
+
     private fun getPointOnCircle(radius: Float, angle: Float, centreX: Float = arcRadius, centreY: Float = arcRadius) =
             Pair(centreX + radius * -cos(Math.toRadians(angle.toDouble())).toFloat(),
                     centreY + radius * -sin(Math.toRadians(angle.toDouble())).toFloat())
@@ -207,6 +216,7 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
             putInt(STATE_DIGIT_COLOR, digitColor)
             putInt(STATE_POINTER_COLOR, pointerColor)
             putInt(STATE_SEGMENT_COLOR, segmentColor)
+            putInt(STATE_BACKGROUND_COLOR, background)
             putParcelable(STATE_SUPER, super.onSaveInstanceState())
         }
     }
@@ -221,6 +231,7 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
                 digitColor = state.getInt(STATE_DIGIT_COLOR)
                 pointerColor = state.getInt(STATE_POINTER_COLOR)
                 segmentColor = state.getInt(STATE_SEGMENT_COLOR)
+                background = state.getInt(STATE_BACKGROUND_COLOR)
                 superState = state.getParcelable(STATE_SUPER)
             }
         }

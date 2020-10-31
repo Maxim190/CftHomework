@@ -4,6 +4,7 @@
         <attr name="segmentationColor" format="color"/>
         <attr name="digitColor" format="color"/>
         <attr name="pointerColor" format="color"/>
+        <attr name="backgroundColor" format="color"/>
         <attr name="maxSpeed" format="integer"/>
         <attr name="currentSpeed" format="integer"/>
         <attr name="segmentationAmount" format="integer"/>

@@ -12,7 +12,7 @@ class SpeedometerViewAnimation(private val speedometerView: SpeedometerView) {
     private val maxSpeedColor = Color.parseColor("#ffcccb")
     private val colorAnimator = ValueAnimator().apply {
         addUpdateListener {
-            speedometerView.setSpeedometerBackgroundColor(it.animatedValue as Int)
+            speedometerView.setPointerColor(it.animatedValue as Int)
             setEvaluator(ArgbEvaluator())
         }
     }
@@ -28,6 +28,7 @@ class SpeedometerViewAnimation(private val speedometerView: SpeedometerView) {
     private val fastOutSlowInInterpolator = FastOutSlowInInterpolator()
     private val linearOutSlowInInterpolator = LinearOutSlowInInterpolator()
     private var isSpeedIncAnimationRunning = false
+    private val defaultPointerColor = speedometerView.pointerColor
 
     fun speedIncAnimationStart() {
         if (isSpeedIncAnimationRunning) {
@@ -38,8 +39,8 @@ class SpeedometerViewAnimation(private val speedometerView: SpeedometerView) {
         animate(
             speedFrom = speedometerView.curSpeed,
             speedTo = speedometerView.maxSpeed,
-            colorFrom = speedometerView.background,
-            colorTo = maxSpeedColor)
+            colorFrom = speedometerView.pointerColor,
+            colorTo = Color.RED)
     }
 
     fun speedDecAnimationStart() {
@@ -51,8 +52,8 @@ class SpeedometerViewAnimation(private val speedometerView: SpeedometerView) {
         animate(
             speedFrom = speedometerView.curSpeed,
             speedTo = 0F,
-            colorFrom = speedometerView.background,
-            colorTo = Color.WHITE)
+            colorFrom = speedometerView.pointerColor,
+            colorTo = defaultPointerColor)
     }
 
     private fun animate(speedFrom: Float, speedTo: Float, colorFrom: Int, colorTo: Int) {

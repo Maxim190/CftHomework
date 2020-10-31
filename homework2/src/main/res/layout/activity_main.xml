@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".MainActivity">
 
     <com.example.mycustomview.SpeedometerView
@@ -11,14 +12,15 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        app:digitColor="@color/purple_200"
-        app:pointerColor="@android:color/holo_red_dark"
+        app:digitColor="@color/white"
+        app:pointerColor="@color/light_orange"
+        app:backgroundColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:maxSpeed="180"
         app:segmentationAmount="5"
-        app:segmentationColor="@color/black" />
+        app:segmentationColor="@color/dark_orange" />
 
     <Button
         android:id="@+id/activity_main_gasBtn"
