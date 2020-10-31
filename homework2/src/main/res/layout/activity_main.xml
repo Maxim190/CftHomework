@@ -12,32 +12,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         app:digitColor="@color/purple_200"
-        app:pointerColor="@color/black"
+        app:pointerColor="@android:color/holo_red_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:maxSpeed="180"
-        app:segmentationAmount="2"
+        app:segmentationAmount="5"
         app:segmentationColor="@color/black" />
 
-    <EditText
-        android:id="@+id/activity_main_editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        android:maxLength="8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_main_speedometerView" />
+    <Button
+        android:id="@+id/activity_main_gasBtn"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:text="Gas"
+        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toBottomOf="@id/activity_main_speedometerView"
+        app:layout_constraintStart_toStartOf="@id/activity_main_speedometerView"/>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Speed"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_main_editText"
-        app:layout_constraintEnd_toStartOf="@+id/activity_main_editText"
-        app:layout_constraintTop_toTopOf="@+id/activity_main_editText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,15 +8,15 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 
+
 class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, attrs) {
 
-    private companion object {
+    companion object {
         const val STATE_DIGIT_COLOR = "digitColor"
         const val STATE_MAX_SPEED = "maxSpeed"
         const val STATE_CURRENT_SPEED = "currentSpeed"
@@ -26,8 +26,8 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         const val STATE_SUPER = "superState"
     }
 
-    private val DEFAULT_MAX_SPEED = 200
-    private val DEFAULT_CURRENT_SPEED = 0
+    private val DEFAULT_MAX_SPEED = 200F
+    private val DEFAULT_CURRENT_SPEED = 0F
     private val DEFAULT_SEGMENT_COLOR = Color.CYAN
     private val DEFAULT_DIGIT_COLOR = Color.BLUE
     private val DEFAULT_POINTER_COLOR = Color.RED
@@ -35,16 +35,18 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
     private val DEFAULT_WIDTH = 250
     private val DEFAULT_HEIGHT = 250
 
-    private var maxSpeed: Int = DEFAULT_MAX_SPEED
-        set(value) {
+    private var speedStep: Float
+    var maxSpeed: Float = DEFAULT_MAX_SPEED
+        private set(value) {
             field = (value / blockOfSegmentsAmount) * blockOfSegmentsAmount
         }
-    private var curSpeed: Int = DEFAULT_CURRENT_SPEED
-        set(value) {
+    var curSpeed: Float = DEFAULT_CURRENT_SPEED
+        private set(value) {
             field = value.coerceAtMost(maxSpeed)
         }
-    private var speedStep: Int
 
+    var background: Int = Color.WHITE
+        private set
     private var segmentColor: Int
     private var digitColor: Int
     private var pointerColor: Int
@@ -67,10 +69,10 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         val attrsArray = context.obtainStyledAttributes(attrs, R.styleable.SpeedometerView)
         attrsArray.apply {
             blockOfSegmentsAmount = getInteger(R.styleable.SpeedometerView_segmentationAmount, DEFAULT_SEGMENT_AMOUNT)
-            maxSpeed = getInteger(R.styleable.SpeedometerView_maxSpeed, DEFAULT_MAX_SPEED)
+            maxSpeed = getFloat(R.styleable.SpeedometerView_maxSpeed, DEFAULT_MAX_SPEED)
             segmentColor = getColor(R.styleable.SpeedometerView_segmentationColor, DEFAULT_SEGMENT_COLOR)
             digitColor = getColor(R.styleable.SpeedometerView_digitColor, DEFAULT_DIGIT_COLOR)
-            curSpeed = getInteger(R.styleable.SpeedometerView_currentSpeed, DEFAULT_CURRENT_SPEED)
+            curSpeed = getFloat(R.styleable.SpeedometerView_currentSpeed, DEFAULT_CURRENT_SPEED)
             pointerColor = getInteger(R.styleable.SpeedometerView_pointerColor, DEFAULT_POINTER_COLOR)
         }
         segmentsDegreeStep = 180F / (segmentsPerBlockAmount * blockOfSegmentsAmount)
@@ -118,13 +120,13 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         super.onDraw(canvas)
 
         paint.strokeWidth = normalStrokeWidth
-        paint.color = segmentColor
-        canvas?.drawArc(arcRectF, 0F, -180F, false, paint)
+        drawArc(canvas, Paint.Style.FILL, background)
+        drawArc(canvas, Paint.Style.STROKE, segmentColor)
 
-        var speedCounter = 0
+        var speedCounter = 0F
         var currentAngle = 0F
         for (blockIndex in 0..blockOfSegmentsAmount) {
-            drawSpeedDigits(canvas, currentAngle, speedCounter)
+            drawSpeedDigits(canvas, currentAngle, speedCounter.toInt())
             var segmentCounter = 0
             do {
                 drawSegment(canvas, currentAngle, segmentCounter == 0)
@@ -136,6 +138,12 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
             speedCounter += speedStep
         }
         drawPointer(canvas)
+    }
+
+    private fun drawArc(canvas: Canvas?, paintStyle: Paint.Style, paintColor: Int) {
+        paint.style = paintStyle
+        paint.color = paintColor
+        canvas?.drawArc(arcRectF, 0F, -180F, false, paint)
     }
 
     private fun drawSpeedDigits(canvas: Canvas?, angle: Float, speed: Int) {
@@ -177,8 +185,13 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         canvas?.drawLine(arcRadius, arcRadius, toX, toY, paint)
     }
 
-    fun setCurrentSpeed(speed: Int) {
+    fun setCurrentSpeed(speed: Float) {
         curSpeed = speed
+        invalidate()
+    }
+
+    fun setSpeedometerBackgroundColor(color: Int) {
+        background = color
         invalidate()
     }
 
@@ -188,8 +201,8 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
 
     override fun onSaveInstanceState(): Parcelable? {
         return Bundle().apply {
-            putInt(STATE_MAX_SPEED, maxSpeed)
-            putInt(STATE_CURRENT_SPEED, curSpeed)
+            putFloat(STATE_MAX_SPEED, maxSpeed)
+            putFloat(STATE_CURRENT_SPEED, curSpeed)
             putInt(STATE_SEGMENTS_AMOUNT, segmentsPerBlockAmount)
             putInt(STATE_DIGIT_COLOR, digitColor)
             putInt(STATE_POINTER_COLOR, pointerColor)
@@ -202,8 +215,8 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         var superState = state
         state?.let{
             if (state is Bundle) {
-                maxSpeed = state.getInt(STATE_MAX_SPEED)
-                curSpeed = state.getInt(STATE_CURRENT_SPEED)
+                maxSpeed = state.getFloat(STATE_MAX_SPEED)
+                curSpeed = state.getFloat(STATE_CURRENT_SPEED)
                 segmentsPerBlockAmount = state.getInt(STATE_SEGMENTS_AMOUNT)
                 digitColor = state.getInt(STATE_DIGIT_COLOR)
                 pointerColor = state.getInt(STATE_POINTER_COLOR)
