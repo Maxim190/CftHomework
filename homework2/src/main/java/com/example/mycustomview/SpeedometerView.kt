@@ -1,10 +1,7 @@
 package com.example.mycustomview
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -59,10 +56,17 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
     private val segmentsDegreeStep: Float
     private val bigSegmentLength = 18F
     private val smallSegmentLength = 10F
-
-    private val paint = Paint()
     private val boldStrokeWidth = 5F
     private val normalStrokeWidth = 3F
+
+    private val defaultPaint = Paint()
+    private val smallSegmentsPaint = Paint()
+    private val bigSegmentsPaint = Paint()
+    private val digitPaint = Paint()
+    private val smallSegmentsPath = Path()
+    private val bigSegmentsPath = Path()
+
+    private val digitsCoordinates = HashMap<String, Pair<Float, Float>>()
 
     private var arcRadius: Float = (width / 2F)
     private val paddingFromArc = 15F
@@ -82,10 +86,30 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         segmentsDegreeStep = 180F / (segmentsPerBlockAmount * blockOfSegmentsAmount)
         speedStep = maxSpeed / blockOfSegmentsAmount
 
-        paint.textSize = 30F
-        paint.textAlign = Paint.Align.CENTER
-        paint.style = Paint.Style.STROKE
-        paint.strokeWidth = normalStrokeWidth
+        defaultPaint.apply {
+            style = Paint.Style.STROKE
+            strokeWidth = normalStrokeWidth
+        }
+
+        smallSegmentsPaint.apply {
+            color = segmentColor
+            style = Paint.Style.STROKE
+            strokeWidth = normalStrokeWidth
+        }
+
+        bigSegmentsPaint.apply {
+            color = digitColor
+            style = Paint.Style.STROKE
+            strokeWidth = boldStrokeWidth
+        }
+
+        digitPaint.apply {
+            color = digitColor
+            style = Paint.Style.STROKE
+            strokeWidth = normalStrokeWidth
+            textSize = 30F
+            textAlign = Paint.Align.CENTER
+        }
 
         attrsArray.recycle()
     }
@@ -98,15 +122,7 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
 
         val size = min(width, height)
 
-        arcRectF.apply {
-            left = paint.strokeWidth
-            right = size.toFloat() - paint.strokeWidth
-            bottom = size.toFloat()
-            top = paint.strokeWidth
-        }
-        arcRadius = size / 2F
-
-        setMeasuredDimension(size, size / 2 + paint.strokeWidth.toInt())
+        setMeasuredDimension(size, size / 2 + defaultPaint.strokeWidth.toInt())
     }
 
     private fun measureDimension(minSize: Int, measureSpec: Int): Int {
@@ -120,20 +136,30 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         }
     }
 
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
 
-        paint.strokeWidth = normalStrokeWidth
-        drawArc(canvas, Paint.Style.FILL, background)
-        drawArc(canvas, Paint.Style.STROKE, segmentColor)
+        arcRectF.set(
+                defaultPaint.strokeWidth,
+                defaultPaint.strokeWidth,
+                width.toFloat() - defaultPaint.strokeWidth,
+                width.toFloat())
+
+        arcRadius = width / 2F
 
         var speedCounter = 0F
         var currentAngle = 0F
         for (blockIndex in 0..blockOfSegmentsAmount) {
-            drawSpeedDigits(canvas, currentAngle, speedCounter.toInt())
+            val (speed, coordinates) = calcSpeedDigitsXY(currentAngle, speedCounter.toInt())
+            digitsCoordinates[speed] = coordinates
             var segmentCounter = 0
             do {
-                drawSegment(canvas, currentAngle, segmentCounter == 0)
+                if (segmentCounter == 0) {
+                    calcSegmentAndAddToPath(bigSegmentsPath, currentAngle, bigSegmentLength)
+                }
+                else {
+                    calcSegmentAndAddToPath(smallSegmentsPath, currentAngle, smallSegmentLength)
+                }
 
                 currentAngle += segmentsDegreeStep
                 segmentCounter++
@@ -141,44 +167,62 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
 
             speedCounter += speedStep
         }
+    }
+
+    private fun calcSpeedDigitsXY(angle: Float, speed: Int): Pair<String, Pair<Float, Float>> {
+        val text = speed.toString()
+        val (digitX, digitY) =
+                getPointOnCircle(
+                        radius = arcRadius - 3 * paddingFromArc - bigSegmentLength - defaultPaint.measureText(text) / 2,
+                        angle = angle)
+
+        return Pair(text, Pair(digitX, digitY))
+    }
+
+    private fun calcSegmentAndAddToPath(path: Path, angle: Float, segmentLength: Float) {
+        val (fromX, fromY) =
+                getPointOnCircle(
+                        radius = arcRadius - paddingFromArc,
+                        angle = angle)
+        val (toX, toY) =
+                getPointOnCircle(
+                        radius = arcRadius - paddingFromArc - segmentLength,
+                        angle = angle)
+
+        path.moveTo(fromX, fromY)
+        path.lineTo(toX, toY)
+    }
+
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+
+        defaultPaint.strokeWidth = normalStrokeWidth
+        drawArc(canvas, Paint.Style.FILL, background)
+        drawArc(canvas, Paint.Style.STROKE, segmentColor)
+
+        canvas?.drawPath(smallSegmentsPath, smallSegmentsPaint)
+        canvas?.drawPath(bigSegmentsPath, bigSegmentsPaint)
+
+        digitsCoordinates.forEach {
+            canvas?.drawText(it.key, it.value.first, it.value.second, digitPaint)
+        }
+
         drawPointer(canvas)
     }
 
     private fun drawArc(canvas: Canvas?, paintStyle: Paint.Style, paintColor: Int) {
-        paint.style = paintStyle
-        paint.color = paintColor
-        canvas?.drawArc(arcRectF, 0F, -180F, false, paint)
-    }
-
-    private fun drawSpeedDigits(canvas: Canvas?, angle: Float, speed: Int) {
-        val text = speed.toString()
-        val (digitX, digitY) =
-            getPointOnCircle(
-                radius = arcRadius - 3 * paddingFromArc - bigSegmentLength - paint.measureText(text) / 2,
-                angle = angle)
-
-        paint.color = digitColor
-        canvas?.drawText(text, digitX, digitY, paint)
-    }
-
-    private fun drawSegment(canvas: Canvas?, angle: Float, isBig: Boolean) {
-        paint.strokeWidth = if (isBig) boldStrokeWidth else normalStrokeWidth
-
-        val (fromX, fromY) =
-            getPointOnCircle(
-                radius = arcRadius - paddingFromArc,
-                angle = angle)
-        val (toX, toY) =
-            getPointOnCircle(
-                radius = arcRadius - paddingFromArc - if (isBig) bigSegmentLength else smallSegmentLength,
-                angle = angle)
-
-        paint.color = if (isBig) digitColor else segmentColor
-        canvas?.drawLine(fromX, fromY, toX, toY, paint)
+        defaultPaint.apply {
+            style = paintStyle
+            color = paintColor
+        }
+        canvas?.drawArc(arcRectF, 0F, -180F, false, defaultPaint)
     }
 
     private fun drawPointer(canvas: Canvas?) {
-        paint.color = pointerColor
+        defaultPaint.apply {
+            color = pointerColor
+            strokeWidth = boldStrokeWidth
+        }
         val currentSpeedCircleAngle = curSpeed / (maxSpeed / 180F)
 
         val (toX, toY) =
@@ -186,7 +230,7 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
                         radius = arcRadius - paddingFromArc,
                         angle = currentSpeedCircleAngle)
 
-        canvas?.drawLine(arcRadius, arcRadius, toX, toY, paint)
+        canvas?.drawLine(arcRadius, arcRadius, toX, toY, defaultPaint)
     }
 
     fun setCurrentSpeed(speed: Float) {
