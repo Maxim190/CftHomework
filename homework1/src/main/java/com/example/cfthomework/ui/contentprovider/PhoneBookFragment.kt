@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_contentprovider.*
 
 class PhoneBookFragment: Fragment() {
 
-    private val storage = App.appContext?.let { PhoneBookStorage(it) }
+    private lateinit var storage: PhoneBookStorage
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +39,8 @@ class PhoneBookFragment: Fragment() {
 
             fragment_contProvider_progressBar.visibility = View.VISIBLE
 
-            storage?.getProfiles()?.observe(viewLifecycleOwner) {
+            storage = PhoneBookStorage(requireContext())
+            storage.getProfiles().observe(viewLifecycleOwner) {
                 recyclerView.adapter = PhoneBookAdapter(it)
                 fragment_contProvider_progressBar.visibility = View.INVISIBLE
             }
