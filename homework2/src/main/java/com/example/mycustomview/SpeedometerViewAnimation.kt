@@ -9,25 +9,35 @@ import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 
 class SpeedometerViewAnimation(private val speedometerView: SpeedometerView) {
 
-    private val colorAnimator = ValueAnimator().apply {
-        addUpdateListener {
-            speedometerView.setPointerColor(it.animatedValue as Int)
-            setEvaluator(ArgbEvaluator())
+    private val colorAnimator: ValueAnimator
+    private val speedAnimator: ValueAnimator
+    private val animatorSet: AnimatorSet
+    private val fastOutSlowInInterpolator: FastOutSlowInInterpolator
+    private val linearOutSlowInInterpolator: LinearOutSlowInInterpolator
+    private var isSpeedIncAnimationRunning: Boolean
+    private val defaultPointerColor: Int
+
+    init {
+        colorAnimator = ValueAnimator().apply {
+            addUpdateListener {
+                speedometerView.setPointerColor(it.animatedValue as Int)
+                setEvaluator(ArgbEvaluator())
+            }
         }
-    }
-    private val speedAnimator = ValueAnimator().apply {
-        addUpdateListener {
-            speedometerView.setCurrentSpeed(it.animatedValue as Float)
+        speedAnimator = ValueAnimator().apply {
+            addUpdateListener {
+                speedometerView.setCurrentSpeed(it.animatedValue as Float)
+            }
         }
+        animatorSet = AnimatorSet().apply {
+            play(speedAnimator).with(colorAnimator)
+            duration = 6000L
+        }
+        fastOutSlowInInterpolator = FastOutSlowInInterpolator()
+        linearOutSlowInInterpolator = LinearOutSlowInInterpolator()
+        isSpeedIncAnimationRunning = false
+        defaultPointerColor = speedometerView.pointerColor
     }
-    private val animatorSet = AnimatorSet().apply {
-        play(speedAnimator).with(colorAnimator)
-        duration = 6000L
-    }
-    private val fastOutSlowInInterpolator = FastOutSlowInInterpolator()
-    private val linearOutSlowInInterpolator = LinearOutSlowInInterpolator()
-    private var isSpeedIncAnimationRunning = false
-    private val defaultPointerColor = speedometerView.pointerColor
 
     fun speedIncAnimationStart() {
         if (isSpeedIncAnimationRunning) {
