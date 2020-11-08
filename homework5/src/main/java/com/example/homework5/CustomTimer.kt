@@ -14,7 +14,9 @@ class CustomTimer(private val listener: TimeListener? = null){
         fun onTick(seconds: Int)
     }
 
+    @Volatile
     private var isStopped = false
+    @Volatile
     private var isRunning = false
 
     var counter = 0
