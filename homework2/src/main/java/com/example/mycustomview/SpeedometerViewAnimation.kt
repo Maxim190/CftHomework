@@ -9,7 +9,6 @@ import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 
 class SpeedometerViewAnimation(private val speedometerView: SpeedometerView) {
 
-    private val maxSpeedColor = Color.parseColor("#ffcccb")
     private val colorAnimator = ValueAnimator().apply {
         addUpdateListener {
             speedometerView.setPointerColor(it.animatedValue as Int)
