@@ -22,17 +22,17 @@ class SpeedometerView(context: Context, attrs: AttributeSet?): View(context, att
         const val STATE_SEGMENT_COLOR = "segmentColor"
         const val STATE_BACKGROUND_COLOR = "backgroundColor"
         const val STATE_SUPER = "superState"
-    }
 
-    private val DEFAULT_MAX_SPEED = 200F
-    private val DEFAULT_CURRENT_SPEED = 0F
-    private val DEFAULT_SEGMENT_COLOR = Color.CYAN
-    private val DEFAULT_DIGIT_COLOR = Color.BLUE
-    private val DEFAULT_POINTER_COLOR = Color.RED
-    private val DEFAULT_BACKGROUND_COLOR = Color.WHITE
-    private val DEFAULT_SEGMENT_AMOUNT = 5
-    private val DEFAULT_WIDTH = 250
-    private val DEFAULT_HEIGHT = 250
+        private const val DEFAULT_MAX_SPEED = 200F
+        private const val DEFAULT_CURRENT_SPEED = 0F
+        private const val DEFAULT_SEGMENT_COLOR = Color.CYAN
+        private const val DEFAULT_DIGIT_COLOR = Color.BLUE
+        private const val DEFAULT_POINTER_COLOR = Color.RED
+        private const val DEFAULT_BACKGROUND_COLOR = Color.WHITE
+        private const val DEFAULT_SEGMENT_AMOUNT = 5
+        private const val DEFAULT_WIDTH = 250
+        private const val DEFAULT_HEIGHT = 250
+    }
 
     private var speedStep: Float
     var maxSpeed: Float = DEFAULT_MAX_SPEED
