@@ -61,8 +61,7 @@ class MainActivity : AppCompatActivity() {
 //                    counter
 //                })
 //                .doOnNext { Thread.sleep(10L) }
-//                .doOnComplete { Log.d(TAG, "onCreate: All") }
-//                .subscribeOn(Schedulers.newThread())
+//                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribe {
 //                    result.text = it.toString()
